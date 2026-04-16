@@ -96,33 +96,35 @@ export default function ScorecardStep() {
           <div className="bg-primary px-4 py-2">
             <h2 className="text-primary-foreground font-semibold">Dimension scores</h2>
           </div>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-primary/90">
-                {['Dimension', 'Raw score (/20)', 'Normalized (/100)', 'Weight (%)', 'Weighted score', 'Risk level'].map(h => (
-                  <th key={h} className="text-primary-foreground px-4 py-2 text-center font-semibold">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {dimScores.map(({ dim, raw, normalized, weight, weighted, riskLevel }) => (
-                <tr key={dim.id} className="border-b border-border">
-                  <td className="px-4 py-3 font-semibold">{dim.name}</td>
-                  <td className="px-4 py-3 text-center font-bold">{raw}</td>
-                  <td className="px-4 py-3 text-center">{normalized.toFixed(0)}</td>
-                  <td className="px-4 py-3 text-center">{weight}%</td>
-                  <td className="px-4 py-3 text-center font-bold text-destructive bg-blue-50">{weighted.toFixed(1)}</td>
-                  <td className={`px-4 py-3 text-center font-bold ${riskColor(riskLevel)}`}>{riskLevel}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[640px]">
+              <thead>
+                <tr className="bg-primary/90">
+                  {['Dimension', 'Raw (/20)', 'Norm (/100)', 'Weight', 'Weighted', 'Risk'].map(h => (
+                    <th key={h} className="text-primary-foreground px-3 py-2 text-center font-semibold whitespace-nowrap">{h}</th>
+                  ))}
                 </tr>
-              ))}
-              <tr className="bg-primary text-primary-foreground font-bold text-lg">
-                <td className="px-4 py-3">ODI TOTAL</td>
-                <td /><td /><td />
-                <td className="px-4 py-3 text-center">{totalWeighted.toFixed(1)}</td>
-                <td className="px-4 py-3 text-center">{classification}</td>
-              </tr>
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {dimScores.map(({ dim, raw, normalized, weight, weighted, riskLevel }) => (
+                  <tr key={dim.id} className="border-b border-border">
+                    <td className="px-3 py-2.5 font-semibold whitespace-nowrap">{dim.name}</td>
+                    <td className="px-3 py-2.5 text-center font-bold">{raw}</td>
+                    <td className="px-3 py-2.5 text-center">{normalized.toFixed(0)}</td>
+                    <td className="px-3 py-2.5 text-center">{weight}%</td>
+                    <td className="px-3 py-2.5 text-center font-bold text-destructive bg-blue-50">{weighted.toFixed(1)}</td>
+                    <td className={`px-3 py-2.5 text-center font-bold whitespace-nowrap ${riskColor(riskLevel)}`}>{riskLevel}</td>
+                  </tr>
+                ))}
+                <tr className="bg-primary text-primary-foreground font-bold">
+                  <td className="px-3 py-2.5">ODI TOTAL</td>
+                  <td /><td /><td />
+                  <td className="px-3 py-2.5 text-center">{totalWeighted.toFixed(1)}</td>
+                  <td className="px-3 py-2.5 text-center">{classification}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="rounded-lg overflow-hidden border border-border">
@@ -137,13 +139,13 @@ export default function ScorecardStep() {
 
         <div className="rounded-lg overflow-hidden border border-border">
           <div className="bg-primary px-4 py-2">
-            <h2 className="text-primary-foreground font-semibold">Spike analysis — highest single dimension (the real risk)</h2>
+            <h2 className="text-primary-foreground font-semibold">Spike analysis — highest single dimension</h2>
           </div>
-          <div className="p-4 flex items-center gap-6">
+          <div className="p-4 flex flex-wrap items-center gap-x-6 gap-y-2">
             <span className="font-semibold">Highest dimension:</span>
             <span className="text-destructive font-bold">{highestDim.dim.name}</span>
             <span className="font-bold">{highestDim.weighted.toFixed(0)}/100</span>
-            <span className="text-sm text-muted-foreground">This is where the existential risk sits — fix this first regardless of blended score</span>
+            <span className="text-sm text-muted-foreground basis-full mt-1">Fix this first regardless of blended score — this is where the existential risk sits.</span>
           </div>
         </div>
 
