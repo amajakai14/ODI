@@ -25,22 +25,29 @@ export default function AssessmentStep() {
               </h2>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm table-fixed">
+                <colgroup>
+                  <col className="w-[60px]" />
+                  <col className="w-[35%]" />
+                  <col className="w-[100px]" />
+                  <col className="w-[35%]" />
+                  <col className="w-[80px]" />
+                </colgroup>
                 <thead>
                   <tr className="bg-primary/90">
-                    <th className="text-primary-foreground px-3 py-2 text-left w-12">#</th>
+                    <th className="text-primary-foreground px-3 py-2 text-left">#</th>
                     <th className="text-primary-foreground px-3 py-2 text-left">Observable indicator</th>
-                    <th className="text-primary-foreground px-3 py-2 text-center w-28">Answer (Y/N or #)</th>
+                    <th className="text-primary-foreground px-3 py-2 text-center">Answer</th>
                     <th className="text-primary-foreground px-3 py-2 text-left">Scoring guide</th>
-                    <th className="text-primary-foreground px-3 py-2 text-center w-20">Points (auto)</th>
+                    <th className="text-primary-foreground px-3 py-2 text-center">Points</th>
                     
                   </tr>
                 </thead>
                 <tbody>
                   {dim.questions.map((q) => (
-                    <tr key={q.id} className="border-b border-border hover:bg-muted/50">
+                    <tr key={q.id} className="border-b border-border hover:bg-muted/50 align-top">
                       <td className="px-3 py-3 font-semibold">{q.id}</td>
-                      <td className="px-3 py-3 max-w-xs">{q.text}</td>
+                      <td className="px-3 py-3">{q.text}</td>
                       <td className="px-3 py-3 text-center">
                         {q.answerType === 'yn' ? (
                           <Select value={answers[q.id] || ''} onValueChange={(v) => setAnswer(q.id, v)}>
@@ -59,7 +66,7 @@ export default function AssessmentStep() {
                           />
                         )}
                       </td>
-                      <td className="px-3 py-3 text-xs text-muted-foreground whitespace-pre-line max-w-xs">{q.scoringGuide}</td>
+                      <td className="px-3 py-3 text-xs text-muted-foreground whitespace-pre-line">{q.scoringGuide}</td>
                       <td className="px-3 py-3 text-center font-bold text-emerald-700">
                         {answers[q.id] ? q.score(answers[q.id]) : 0}
                       </td>
@@ -70,7 +77,6 @@ export default function AssessmentStep() {
                     <td colSpan={3} className="px-3 py-2 text-right">Dimension raw score</td>
                     <td className="px-3 py-2">/20 points max</td>
                     <td className="px-3 py-2 text-center text-lg">{rawScore}</td>
-                    <td />
                   </tr>
                 </tbody>
               </table>
