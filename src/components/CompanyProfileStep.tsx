@@ -49,9 +49,9 @@ export default function CompanyProfileStep() {
             <Input
               type="text"
               inputMode="numeric"
-              value={profile.annualRevenue || ''}
+              value={profile.annualRevenue ? Number(profile.annualRevenue).toLocaleString() : ''}
               onChange={(e) => {
-                const val = e.target.value.replace(/[^0-9.]/g, '');
+                const val = e.target.value.replace(/[^0-9]/g, '');
                 setProfile({ annualRevenue: val });
               }}
               className="bg-muted/30"
