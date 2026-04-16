@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 interface HexData {
   id: string;
   label: string;
-  score: number; // 0-100 normalized
+  score: number;
   riskLevel: string;
 }
 
@@ -26,8 +26,8 @@ function polarToXY(cx: number, cy: number, angle: number, r: number) {
 }
 
 export default function HexMap({ data, totalScore, classification }: HexMapProps) {
-  const cx = 250, cy = 230, maxR = 160;
-  const n = data.length; // 6
+  const cx = 300, cy = 280, maxR = 160;
+  const n = data.length;
 
   const axes = useMemo(() => {
     return data.map((_, i) => {
@@ -36,7 +36,6 @@ export default function HexMap({ data, totalScore, classification }: HexMapProps
     });
   }, [data, n]);
 
-  // Grid hexagons at 20%, 40%, 60%, 80%, 100%
   const gridLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
 
   const gridPaths = gridLevels.map(pct => {
@@ -45,20 +44,34 @@ export default function HexMap({ data, totalScore, classification }: HexMapProps
     return points.map(p => `${p.x},${p.y}`).join(' ');
   });
 
-  // Data polygon
   const dataPoints = data.map((d, i) => {
     const r = (d.score / 100) * maxR;
     return polarToXY(cx, cy, axes[i], r);
   });
   const dataPath = dataPoints.map(p => `${p.x},${p.y}`).join(' ');
 
-  // Overall fill color based on total
   const overallLevel = totalScore <= 20 ? 'LOW' : totalScore <= 40 ? 'MODERATE' : totalScore <= 60 ? 'HIGH' : totalScore <= 80 ? 'VERY HIGH' : 'CRITICAL';
   const fillColor = riskColor(overallLevel);
 
+  // Compute label anchor based on angle to avoid overlap
+  const getLabelAnchor = (angle: number) => {
+    const deg = ((angle * 180) / Math.PI + 360) % 360;
+    if (deg > 80 && deg < 100) return 'middle'; // bottom
+    if (deg > 260 && deg < 280) return 'middle'; // top
+    if (deg >= 90 && deg <= 270) return 'end';
+    return 'start';
+  };
+
+  const getLabelDy = (angle: number) => {
+    const deg = ((angle * 180) / Math.PI + 360) % 360;
+    if (deg > 250 && deg < 290) return -6; // top — push up
+    if (deg > 70 && deg < 110) return 14; // bottom — push down
+    return 4;
+  };
+
   return (
     <div className="flex justify-center">
-      <svg viewBox="0 0 500 460" className="w-full max-w-[550px]" style={{ fontFamily: 'system-ui, sans-serif' }}>
+      <svg viewBox="0 0 600 560" className="w-full max-w-[600px]" style={{ fontFamily: 'system-ui, sans-serif' }}>
         {/* Grid hexagons */}
         {gridPaths.map((pts, i) => (
           <polygon
@@ -77,7 +90,7 @@ export default function HexMap({ data, totalScore, classification }: HexMapProps
           return <line key={i} x1={cx} y1={cy} x2={end.x} y2={end.y} stroke="#e5e7eb" strokeWidth="1" />;
         })}
 
-        {/* Grid labels (percentages) */}
+        {/* Grid labels */}
         {gridLevels.map((pct, i) => (
           <text key={i} x={cx + 4} y={cy - maxR * pct + 4} fontSize="9" fill="#9ca3af" textAnchor="start">
             {pct * 100}
@@ -88,7 +101,7 @@ export default function HexMap({ data, totalScore, classification }: HexMapProps
         <polygon
           points={dataPath}
           fill={fillColor}
-          fillOpacity="0.2"
+          fillOpacity="0.15"
           stroke={fillColor}
           strokeWidth="2.5"
         />
@@ -97,17 +110,19 @@ export default function HexMap({ data, totalScore, classification }: HexMapProps
         {data.map((d, i) => {
           const r = (d.score / 100) * maxR;
           const pt = polarToXY(cx, cy, axes[i], r);
-          const labelPt = polarToXY(cx, cy, axes[i], maxR + 28);
-          const scorePt = polarToXY(cx, cy, axes[i], maxR + 44);
+          const labelPt = polarToXY(cx, cy, axes[i], maxR + 30);
+          const scorePt = polarToXY(cx, cy, axes[i], maxR + 48);
           const color = riskColor(d.riskLevel);
+          const anchor = getLabelAnchor(axes[i]);
+          const dy = getLabelDy(axes[i]);
 
           return (
             <g key={d.id}>
               <circle cx={pt.x} cy={pt.y} r="5" fill={color} stroke="#fff" strokeWidth="2" />
-              <text x={labelPt.x} y={labelPt.y} textAnchor="middle" fontSize="11" fontWeight="700" fill="#374151">
+              <text x={labelPt.x} y={labelPt.y} dy={dy} textAnchor={anchor} fontSize="11" fontWeight="700" fill="#374151">
                 {d.label}
               </text>
-              <text x={scorePt.x} y={scorePt.y} textAnchor="middle" fontSize="10" fontWeight="600" fill={color}>
+              <text x={scorePt.x} y={scorePt.y} dy={dy} textAnchor={anchor} fontSize="10" fontWeight="600" fill={color}>
                 {d.score.toFixed(0)} — {d.riskLevel}
               </text>
             </g>
@@ -115,9 +130,9 @@ export default function HexMap({ data, totalScore, classification }: HexMapProps
         })}
 
         {/* Center label */}
-        <text x={cx} y={cy - 8} textAnchor="middle" fontSize="10" fill="#6b7280" fontWeight="600">ODI TOTAL</text>
-        <text x={cx} y={cy + 16} textAnchor="middle" fontSize="26" fontWeight="800" fill={fillColor}>{totalScore.toFixed(0)}</text>
-        <text x={cx} y={cy + 32} textAnchor="middle" fontSize="9" fontWeight="600" fill={fillColor}>{classification}</text>
+        <text x={cx} y={cy - 10} textAnchor="middle" fontSize="10" fill="#6b7280" fontWeight="600">ODI TOTAL</text>
+        <text x={cx} y={cy + 18} textAnchor="middle" fontSize="28" fontWeight="800" fill={fillColor}>{totalScore.toFixed(0)}</text>
+        <text x={cx} y={cy + 36} textAnchor="middle" fontSize="10" fontWeight="600" fill={fillColor}>{classification}</text>
       </svg>
     </div>
   );
