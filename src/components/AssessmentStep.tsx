@@ -1,8 +1,7 @@
 import { useODIStore } from '@/lib/odi-store';
 import { dimensions } from '@/lib/odi-data';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export default function AssessmentStep() {
   const { answers, setAnswer, setStep } = useODIStore();
@@ -12,7 +11,7 @@ export default function AssessmentStep() {
       <div>
         <h1 className="text-2xl font-bold text-foreground">ODI v2 ASSESSMENT — OBSERVABLE INDICATORS</h1>
         <p className="text-muted-foreground mt-1">Each question uses Y/N or countable indicators. No subjective judgment needed.</p>
-        <p className="text-sm text-muted-foreground">For each indicator, enter Y (yes, dependency exists) or N (no, system handles it). Count-based questions: enter the number.</p>
+        <p className="text-sm text-muted-foreground">Select the answer that best describes your business situation.</p>
       </div>
 
       {dimensions.map((dim) => {
@@ -28,19 +27,16 @@ export default function AssessmentStep() {
               <table className="w-full text-sm table-fixed">
                 <colgroup>
                   <col className="w-[60px]" />
-                  <col className="w-[35%]" />
-                  <col className="w-[100px]" />
-                  <col className="w-[35%]" />
+                  <col className="w-[30%]" />
+                  <col />
                   <col className="w-[80px]" />
                 </colgroup>
                 <thead>
                   <tr className="bg-primary/90">
                     <th className="text-primary-foreground px-3 py-2 text-left">#</th>
                     <th className="text-primary-foreground px-3 py-2 text-left">Observable indicator</th>
-                    <th className="text-primary-foreground px-3 py-2 text-center">Answer</th>
-                    <th className="text-primary-foreground px-3 py-2 text-left">Scoring guide</th>
+                    <th className="text-primary-foreground px-3 py-2 text-center">Select answer</th>
                     <th className="text-primary-foreground px-3 py-2 text-center">Points</th>
-                    
                   </tr>
                 </thead>
                 <tbody>
@@ -48,33 +44,38 @@ export default function AssessmentStep() {
                     <tr key={q.id} className="border-b border-border hover:bg-muted/50 align-top">
                       <td className="px-3 py-3 font-semibold">{q.id}</td>
                       <td className="px-3 py-3">{q.text}</td>
-                      <td className="px-3 py-3 text-center">
-                        {q.answerType === 'yn' ? (
-                          <Select value={answers[q.id] || ''} onValueChange={(v) => setAnswer(q.id, v)}>
-                            <SelectTrigger className="w-20 mx-auto"><SelectValue placeholder="—" /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Y">Y</SelectItem>
-                              <SelectItem value="N">N</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <Input
-                            type="number"
-                            value={answers[q.id] || ''}
-                            onChange={(e) => setAnswer(q.id, e.target.value)}
-                            className="w-20 mx-auto text-center"
-                          />
-                        )}
+                      <td className="px-3 py-3">
+                        <div className="flex flex-wrap gap-2">
+                          {q.options.map((opt) => {
+                            const isSelected = answers[q.id] === opt.value;
+                            return (
+                              <button
+                                key={opt.value}
+                                onClick={() => setAnswer(q.id, opt.value)}
+                                className={cn(
+                                  'px-3 py-1.5 rounded-md text-xs font-medium border transition-all',
+                                  isSelected
+                                    ? opt.risk === 'low'
+                                      ? 'bg-emerald-100 border-emerald-500 text-emerald-800 ring-2 ring-emerald-300'
+                                      : opt.risk === 'medium'
+                                        ? 'bg-amber-100 border-amber-500 text-amber-800 ring-2 ring-amber-300'
+                                        : 'bg-red-100 border-red-500 text-red-800 ring-2 ring-red-300'
+                                    : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted hover:border-foreground/30'
+                                )}
+                              >
+                                {opt.label}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </td>
-                      <td className="px-3 py-3 text-xs text-muted-foreground whitespace-pre-line">{q.scoringGuide}</td>
                       <td className="px-3 py-3 text-center font-bold text-emerald-700">
                         {answers[q.id] ? q.score(answers[q.id]) : 0}
                       </td>
-                      
                     </tr>
                   ))}
                   <tr className="bg-muted font-bold">
-                    <td colSpan={3} className="px-3 py-2 text-right">Dimension raw score</td>
+                    <td colSpan={2} className="px-3 py-2 text-right">Dimension raw score</td>
                     <td className="px-3 py-2">/20 points max</td>
                     <td className="px-3 py-2 text-center text-lg">{rawScore}</td>
                   </tr>
