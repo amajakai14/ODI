@@ -109,17 +109,3 @@ export const useODIStore = create<ODIState>((set, get) => ({
   },
 }));
 
-  // Subscribe to relevant state changes
-  useODIStore.subscribe((state, prevState) => {
-    if (!userId || !state.loaded) return;
-    if (
-      state.profile !== prevState.profile ||
-      state.answers !== prevState.answers ||
-      state.selectedProfile !== prevState.selectedProfile ||
-      state.step !== prevState.step ||
-      state.clients !== prevState.clients
-    ) {
-      debouncedSave(userId, useODIStore.getState as any);
-    }
-  });
-}
