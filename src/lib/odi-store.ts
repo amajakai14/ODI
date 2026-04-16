@@ -109,8 +109,6 @@ export const useODIStore = create<ODIState>((set, get) => ({
   },
 }));
 
-  const store = useODIStore();
-
   // Subscribe to relevant state changes
   useODIStore.subscribe((state, prevState) => {
     if (!userId || !state.loaded) return;
