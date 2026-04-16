@@ -109,8 +109,6 @@ export const useODIStore = create<ODIState>((set, get) => ({
   },
 }));
 
-// Auto-save hook
-export function useAutoSave(userId: string | undefined) {
   const store = useODIStore();
 
   // Subscribe to relevant state changes
