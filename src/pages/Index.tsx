@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { useODIStore } from '@/lib/odi-store';
+import { useAuth } from '@/contexts/AuthContext';
 import CompanyProfileStep from '@/components/CompanyProfileStep';
 import AssessmentStep from '@/components/AssessmentStep';
 import RevenueRiskStep from '@/components/RevenueRiskStep';
@@ -7,7 +9,44 @@ import ScorecardStep from '@/components/ScorecardStep';
 const steps = ['Company Profile', 'Assessment', 'Revenue at Risk', 'Scorecard'];
 
 const Index = () => {
-  const { step } = useODIStore();
+  const { step, loaded, loadAssessment, saveAssessment } = useODIStore();
+  const { user } = useAuth();
+
+  // Load saved assessment on mount
+  useEffect(() => {
+    if (user?.id && !loaded) {
+      loadAssessment(user.id);
+    }
+  }, [user?.id, loaded, loadAssessment]);
+
+  // Auto-save on state changes
+  useEffect(() => {
+    if (!user?.id || !loaded) return;
+    const unsub = useODIStore.subscribe((state, prevState) => {
+      if (
+        state.profile !== prevState.profile ||
+        state.answers !== prevState.answers ||
+        state.selectedProfile !== prevState.selectedProfile ||
+        state.step !== prevState.step ||
+        state.clients !== prevState.clients
+      ) {
+        // Debounced save
+        const timer = setTimeout(() => {
+          state.saveAssessment(user!.id);
+        }, 1500);
+        return () => clearTimeout(timer);
+      }
+    });
+    return unsub;
+  }, [user?.id, loaded]);
+
+  if (!loaded) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading your assessment...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
