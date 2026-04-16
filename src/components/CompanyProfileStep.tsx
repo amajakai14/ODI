@@ -32,7 +32,6 @@ export default function CompanyProfileStep() {
             ['numberOfEmployees', 'Number of employees'],
             ['yearEstablished', 'Year established'],
             ['assessmentDate', 'Assessment date'],
-            ['annualRevenue', 'Annual revenue (THB)'],
             ['ownerAge', 'Owner age'],
             ['assessedBy', 'Assessed by'],
           ].map(([key, label]) => (
@@ -45,6 +44,19 @@ export default function CompanyProfileStep() {
               />
             </div>
           ))}
+          <div className="flex items-center gap-3">
+            <Label className="w-44 shrink-0 font-semibold">Annual revenue (THB):</Label>
+            <Input
+              type="text"
+              inputMode="numeric"
+              value={profile.annualRevenue || ''}
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^0-9.]/g, '');
+                setProfile({ annualRevenue: val });
+              }}
+              className="bg-muted/30"
+            />
+          </div>
           <div className="flex items-center gap-3">
             <Label className="w-44 shrink-0 font-semibold">Industry type:</Label>
             <Select value={selectedProfile} onValueChange={handleIndustryChange}>
