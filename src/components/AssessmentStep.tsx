@@ -33,7 +33,7 @@ export default function AssessmentStep() {
                     <th className="text-primary-foreground px-3 py-2 text-center w-28">Answer (Y/N or #)</th>
                     <th className="text-primary-foreground px-3 py-2 text-left">Scoring guide</th>
                     <th className="text-primary-foreground px-3 py-2 text-center w-20">Points (auto)</th>
-                    <th className="text-primary-foreground px-3 py-2 text-left">Quick win action</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
@@ -63,7 +63,7 @@ export default function AssessmentStep() {
                       <td className="px-3 py-3 text-center font-bold text-emerald-700">
                         {answers[q.id] ? q.score(answers[q.id]) : 0}
                       </td>
-                      <td className="px-3 py-3 text-sm text-blue-700 max-w-xs">{q.quickWin}</td>
+                      
                     </tr>
                   ))}
                   <tr className="bg-muted font-bold">
