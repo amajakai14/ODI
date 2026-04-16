@@ -16,6 +16,8 @@ export interface Dimension {
   name: string;
   color: string;
   questions: Question[];
+  shortTermRecs: string[];
+  longTermRecs: string[];
 }
 
 export interface WeightProfile {
@@ -58,6 +60,16 @@ function rangeScore(answer: string, ranges: [number, number, number][]): number 
 export const dimensions: Dimension[] = [
   {
     id: 'd1', name: 'Decision making', color: 'hsl(0, 60%, 95%)',
+    shortTermRecs: [
+      'Create a Decision Authority Matrix with clear thresholds by role',
+      'Appoint an acting decision-maker for owner absences',
+      'Set spending approval limits (e.g., managers approve <50K THB)',
+    ],
+    longTermRecs: [
+      'Embed decision-making culture: reward initiative, remove fear of good-faith errors',
+      'Build a leadership team that owns strategic decisions in their domains',
+      'Phase out owner involvement in all routine operational decisions',
+    ],
     questions: [
       { id: 'D1.1', text: 'Is there a written Decision Authority Matrix?', answerType: 'yn',
         scoringGuide: 'Y = no document exists\nN = document exists and is used',
@@ -83,6 +95,16 @@ export const dimensions: Dimension[] = [
   },
   {
     id: 'd2', name: 'Client relationships', color: 'hsl(30, 60%, 95%)',
+    shortTermRecs: [
+      'Deploy a CRM and migrate all client history from personal channels',
+      'Start co-selling: pair owner with team member on every client interaction',
+      'Schedule solo client visits for account managers with top 5 clients',
+    ],
+    longTermRecs: [
+      'Complete relationship transfer for all top 10 clients within 12 months',
+      'Build a client success team that owns renewals and upsells independently',
+      'Establish institutional brand trust that outlasts any individual relationship',
+    ],
     questions: [
       { id: 'D2.1', text: 'What % of top-10 client revenue is from clients who contact the owner\'s personal phone first?', answerType: 'number',
         scoringGuide: 'Enter % (e.g. 70)\nScore: 0-20%=0, 21-40%=1, 41-60%=2, 61-80%=3, 81-100%=4',
@@ -108,6 +130,16 @@ export const dimensions: Dimension[] = [
   },
   {
     id: 'd3', name: 'Knowledge & IP', color: 'hsl(120, 40%, 95%)',
+    shortTermRecs: [
+      'Document the top 5 critical processes as written SOPs this month',
+      'Record any trade secrets/formulations in a secure vault with backup access',
+      'Launch monthly knowledge-transfer sessions between key staff',
+    ],
+    longTermRecs: [
+      'Build a structured onboarding program reducing ramp-up to under 4 weeks',
+      'Create a living knowledge base accessible to all team members',
+      'Cross-train every critical role so no single departure causes knowledge loss',
+    ],
     questions: [
       { id: 'D3.1', text: 'Are the company\'s top 5 processes documented in written SOPs?', answerType: 'yn',
         scoringGuide: 'Y = no SOPs exist\nN = SOPs exist and are current',
@@ -133,6 +165,16 @@ export const dimensions: Dimension[] = [
   },
   {
     id: 'd4', name: 'Operations & systems', color: 'hsl(200, 50%, 95%)',
+    shortTermRecs: [
+      'Build a daily revenue/KPI dashboard the owner can check without asking anyone',
+      'Create opening/closing checklists and delegate to team',
+      'Set up a password manager with shared access for critical systems',
+    ],
+    longTermRecs: [
+      'Automate the top 3 most time-consuming manual tasks (invoicing, reporting, inventory)',
+      'Institute a weekly standup + monthly operating review rhythm',
+      'Achieve full operational independence: business runs without owner for 30+ days',
+    ],
     questions: [
       { id: 'D4.1', text: 'Can the owner see today\'s revenue without asking anyone? (real-time dashboard)', answerType: 'yn',
         scoringGuide: 'Y = no dashboard, must ask\nN = dashboard exists',
@@ -158,6 +200,16 @@ export const dimensions: Dimension[] = [
   },
   {
     id: 'd5', name: 'People & leadership', color: 'hsl(270, 40%, 95%)',
+    shortTermRecs: [
+      'Identify and begin developing your No.2 (COO/GM) immediately',
+      'Design KPIs for every role: company → department → individual',
+      'Set hiring authority levels so the owner only interviews senior hires',
+    ],
+    longTermRecs: [
+      'Map successors for all key positions and invest in their development',
+      'Create cross-department communication rhythms (no more hub-and-spoke)',
+      'Build a self-managing leadership team capable of running the business independently',
+    ],
     questions: [
       { id: 'D5.1', text: 'Is there a designated No.2 (COO/GM) who can run the business for 1 month?', answerType: 'yn',
         scoringGuide: 'Y = no one can run it alone\nN = clear No.2 exists',
@@ -183,6 +235,16 @@ export const dimensions: Dimension[] = [
   },
   {
     id: 'd6', name: 'Finance & control', color: 'hsl(45, 60%, 95%)',
+    shortTermRecs: [
+      'Set a payment authority matrix: delegate signing by amount level',
+      'Create an annual budget document with monthly variance tracking',
+      'Fully separate company and personal finances; set a fixed owner salary',
+    ],
+    longTermRecs: [
+      'Achieve financial close within 5 days of month-end',
+      'Build a self-service financial dashboard (cash, P&L, AR/AP)',
+      'Establish financial governance that operates without owner involvement',
+    ],
     questions: [
       { id: 'D6.1', text: 'Does the owner sign every payment/check regardless of amount?', answerType: 'yn',
         scoringGuide: 'Y = owner signs all\nN = payment authority delegated by level',
