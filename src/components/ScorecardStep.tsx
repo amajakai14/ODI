@@ -99,32 +99,53 @@ export default function ScorecardStep() {
           <h2 className="text-primary-foreground font-semibold">Recommendation</h2>
         </div>
         <div className="p-6">
-          <p className="text-blue-700 italic">{recommendation}</p>
+          <p className="text-primary italic font-medium">{recommendation}</p>
         </div>
       </div>
 
-      {/* Quick wins summary */}
+      {/* Combined Action Plan per dimension (sorted by risk) */}
       <div className="rounded-lg overflow-hidden border border-border">
         <div className="bg-primary px-4 py-2">
-          <h2 className="text-primary-foreground font-semibold">Priority Quick Wins</h2>
+          <h2 className="text-primary-foreground font-semibold">Action Plan by Dimension</h2>
         </div>
-        <div className="p-4 space-y-3">
+        <div className="p-4 space-y-6">
           {dimScores
             .sort((a, b) => b.weighted - a.weighted)
-            .slice(0, 3)
-            .map(({ dim }) => (
-              <div key={dim.id}>
-                <h3 className="font-bold text-sm">{dim.name}</h3>
-                <ul className="list-disc ml-5 text-sm text-muted-foreground space-y-1">
-                  {dim.questions
-                    .filter(q => q.score(answers[q.id] || '') >= 3)
-                    .map(q => <li key={q.id}>{q.quickWin}</li>)}
-                  {dim.questions.filter(q => q.score(answers[q.id] || '') >= 3).length === 0 &&
-                    <li>{dim.questions[0].quickWin}</li>
-                  }
-                </ul>
-              </div>
-            ))}
+            .map(({ dim, riskLevel, weighted }) => {
+              const flaggedQuickWins = dim.questions
+                .filter(q => q.score(answers[q.id] || '') >= 3)
+                .map(q => q.quickWin);
+              const quickWins = flaggedQuickWins.length > 0 ? flaggedQuickWins : [dim.questions[0].quickWin];
+
+              return (
+                <div key={dim.id} className="border border-border rounded-lg overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-2 bg-muted/50">
+                    <h3 className="font-bold text-sm">{dim.name}</h3>
+                    <span className={`text-xs font-bold ${riskColor(riskLevel)}`}>{riskLevel} — {weighted.toFixed(1)}pts</span>
+                  </div>
+                  <div className="p-4 grid md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <h4 className="font-semibold text-destructive mb-1">🔥 Quick Wins (This Week)</h4>
+                      <ul className="list-disc ml-4 text-muted-foreground space-y-1">
+                        {quickWins.map((w, i) => <li key={i}>{w}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-amber-600 mb-1">📋 Short-Term (1–3 Months)</h4>
+                      <ul className="list-disc ml-4 text-muted-foreground space-y-1">
+                        {dim.shortTermRecs.map((r, i) => <li key={i}>{r}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-emerald-700 mb-1">🎯 Long-Term (6–12 Months)</h4>
+                      <ul className="list-disc ml-4 text-muted-foreground space-y-1">
+                        {dim.longTermRecs.map((r, i) => <li key={i}>{r}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
         </div>
       </div>
 
