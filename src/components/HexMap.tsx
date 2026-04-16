@@ -13,91 +13,111 @@ interface HexMapProps {
   classification: string;
 }
 
-const riskFill = (level: string) => {
-  if (level === 'LOW') return { bg: '#059669', text: '#ffffff' };
-  if (level === 'MODERATE') return { bg: '#d97706', text: '#ffffff' };
-  if (level === 'HIGH') return { bg: '#ea580c', text: '#ffffff' };
-  if (level === 'VERY HIGH') return { bg: '#dc2626', text: '#ffffff' };
-  return { bg: '#7f1d1d', text: '#ffffff' };
+const riskColor = (level: string) => {
+  if (level === 'LOW') return '#059669';
+  if (level === 'MODERATE') return '#d97706';
+  if (level === 'HIGH') return '#ea580c';
+  if (level === 'VERY HIGH') return '#dc2626';
+  return '#7f1d1d';
 };
 
-function hexPoints(cx: number, cy: number, r: number): string {
-  return Array.from({ length: 6 }, (_, i) => {
-    const angle = (Math.PI / 3) * i - Math.PI / 6;
-    return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
-  }).join(' ');
+function polarToXY(cx: number, cy: number, angle: number, r: number) {
+  return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
 }
 
 export default function HexMap({ data, totalScore, classification }: HexMapProps) {
-  const layout = useMemo(() => {
-    const r = 72;
-    const gap = 6;
-    const h = r * Math.sqrt(3);
-    // Honeycomb: top row 2, middle row 3 (offset), bottom row 1 center
-    // Actually let's do: ring of 6 around center
-    // Center hex for total score, 6 dimensions around it
-    const cx = 280, cy = 210;
-    const ringR = r * 1.82 + gap;
+  const cx = 250, cy = 230, maxR = 160;
+  const n = data.length; // 6
 
-    const positions = data.map((_, i) => {
-      const angle = (Math.PI / 3) * i - Math.PI / 2;
-      return { x: cx + ringR * Math.cos(angle), y: cy + ringR * Math.sin(angle) };
+  const axes = useMemo(() => {
+    return data.map((_, i) => {
+      const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+      return angle;
     });
+  }, [data, n]);
 
-    return { cx, cy, r, positions };
-  }, [data]);
+  // Grid hexagons at 20%, 40%, 60%, 80%, 100%
+  const gridLevels = [0.2, 0.4, 0.6, 0.8, 1.0];
 
-  const overallColor = riskFill(
-    totalScore <= 20 ? 'LOW' : totalScore <= 40 ? 'MODERATE' : totalScore <= 60 ? 'HIGH' : totalScore <= 80 ? 'VERY HIGH' : 'CRITICAL'
-  );
+  const gridPaths = gridLevels.map(pct => {
+    const r = maxR * pct;
+    const points = axes.map(a => polarToXY(cx, cy, a, r));
+    return points.map(p => `${p.x},${p.y}`).join(' ');
+  });
+
+  // Data polygon
+  const dataPoints = data.map((d, i) => {
+    const r = (d.score / 100) * maxR;
+    return polarToXY(cx, cy, axes[i], r);
+  });
+  const dataPath = dataPoints.map(p => `${p.x},${p.y}`).join(' ');
+
+  // Overall fill color based on total
+  const overallLevel = totalScore <= 20 ? 'LOW' : totalScore <= 40 ? 'MODERATE' : totalScore <= 60 ? 'HIGH' : totalScore <= 80 ? 'VERY HIGH' : 'CRITICAL';
+  const fillColor = riskColor(overallLevel);
 
   return (
     <div className="flex justify-center">
-      <svg viewBox="0 0 560 420" className="w-full max-w-[600px]" style={{ fontFamily: 'system-ui, sans-serif' }}>
-        {/* Dimension hexagons */}
+      <svg viewBox="0 0 500 460" className="w-full max-w-[550px]" style={{ fontFamily: 'system-ui, sans-serif' }}>
+        {/* Grid hexagons */}
+        {gridPaths.map((pts, i) => (
+          <polygon
+            key={i}
+            points={pts}
+            fill="none"
+            stroke="#d1d5db"
+            strokeWidth="1"
+            strokeDasharray={i < gridLevels.length - 1 ? '4,4' : '0'}
+          />
+        ))}
+
+        {/* Axis lines */}
+        {axes.map((a, i) => {
+          const end = polarToXY(cx, cy, a, maxR);
+          return <line key={i} x1={cx} y1={cy} x2={end.x} y2={end.y} stroke="#e5e7eb" strokeWidth="1" />;
+        })}
+
+        {/* Grid labels (percentages) */}
+        {gridLevels.map((pct, i) => (
+          <text key={i} x={cx + 4} y={cy - maxR * pct + 4} fontSize="9" fill="#9ca3af" textAnchor="start">
+            {pct * 100}
+          </text>
+        ))}
+
+        {/* Data polygon */}
+        <polygon
+          points={dataPath}
+          fill={fillColor}
+          fillOpacity="0.2"
+          stroke={fillColor}
+          strokeWidth="2.5"
+        />
+
+        {/* Data points and dimension labels */}
         {data.map((d, i) => {
-          const { x, y } = layout.positions[i];
-          const colors = riskFill(d.riskLevel);
-          const fillOpacity = 0.15 + (d.score / 100) * 0.85;
+          const r = (d.score / 100) * maxR;
+          const pt = polarToXY(cx, cy, axes[i], r);
+          const labelPt = polarToXY(cx, cy, axes[i], maxR + 28);
+          const scorePt = polarToXY(cx, cy, axes[i], maxR + 44);
+          const color = riskColor(d.riskLevel);
+
           return (
             <g key={d.id}>
-              <polygon
-                points={hexPoints(x, y, layout.r)}
-                fill={colors.bg}
-                fillOpacity={fillOpacity}
-                stroke={colors.bg}
-                strokeWidth="2.5"
-              />
-              <text x={x} y={y - 16} textAnchor="middle" fill={colors.bg} fontSize="11" fontWeight="700">
-                {d.label.length > 16 ? d.label.slice(0, 14) + '…' : d.label}
+              <circle cx={pt.x} cy={pt.y} r="5" fill={color} stroke="#fff" strokeWidth="2" />
+              <text x={labelPt.x} y={labelPt.y} textAnchor="middle" fontSize="11" fontWeight="700" fill="#374151">
+                {d.label}
               </text>
-              <text x={x} y={y + 6} textAnchor="middle" fill={colors.bg} fontSize="24" fontWeight="800">
-                {d.score.toFixed(0)}
-              </text>
-              <text x={x} y={y + 24} textAnchor="middle" fill={colors.bg} fontSize="10" fontWeight="600">
-                {d.riskLevel}
+              <text x={scorePt.x} y={scorePt.y} textAnchor="middle" fontSize="10" fontWeight="600" fill={color}>
+                {d.score.toFixed(0)} — {d.riskLevel}
               </text>
             </g>
           );
         })}
 
-        {/* Center hex — overall */}
-        <polygon
-          points={hexPoints(layout.cx, layout.cy, layout.r * 0.85)}
-          fill={overallColor.bg}
-          fillOpacity="0.9"
-          stroke={overallColor.bg}
-          strokeWidth="3"
-        />
-        <text x={layout.cx} y={layout.cy - 14} textAnchor="middle" fill="#fff" fontSize="10" fontWeight="600">
-          ODI TOTAL
-        </text>
-        <text x={layout.cx} y={layout.cy + 12} textAnchor="middle" fill="#fff" fontSize="28" fontWeight="800">
-          {totalScore.toFixed(0)}
-        </text>
-        <text x={layout.cx} y={layout.cy + 30} textAnchor="middle" fill="#fff" fontSize="9" fontWeight="600">
-          {classification}
-        </text>
+        {/* Center label */}
+        <text x={cx} y={cy - 8} textAnchor="middle" fontSize="10" fill="#6b7280" fontWeight="600">ODI TOTAL</text>
+        <text x={cx} y={cy + 16} textAnchor="middle" fontSize="26" fontWeight="800" fill={fillColor}>{totalScore.toFixed(0)}</text>
+        <text x={cx} y={cy + 32} textAnchor="middle" fontSize="9" fontWeight="600" fill={fillColor}>{classification}</text>
       </svg>
     </div>
   );
