@@ -125,19 +125,19 @@ export default function ScorecardStep() {
                   </div>
                   <div className="p-4 grid md:grid-cols-3 gap-4 text-sm">
                     <div>
-                      <h4 className="font-semibold text-destructive mb-1">🔥 Quick Wins (This Week)</h4>
+                      <h4 className="font-semibold text-destructive mb-1">Quick Wins (This Week)</h4>
                       <ul className="list-disc ml-4 text-muted-foreground space-y-1">
                         {quickWins.map((w, i) => <li key={i}>{w}</li>)}
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-amber-600 mb-1">📋 Short-Term (1–3 Months)</h4>
+                      <h4 className="font-semibold text-amber-600 mb-1">Short-Term (1–3 Months)</h4>
                       <ul className="list-disc ml-4 text-muted-foreground space-y-1">
                         {dim.shortTermRecs.map((r, i) => <li key={i}>{r}</li>)}
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-emerald-700 mb-1">🎯 Long-Term (6–12 Months)</h4>
+                      <h4 className="font-semibold text-emerald-700 mb-1">Long-Term (6–12 Months)</h4>
                       <ul className="list-disc ml-4 text-muted-foreground space-y-1">
                         {dim.longTermRecs.map((r, i) => <li key={i}>{r}</li>)}
                       </ul>
