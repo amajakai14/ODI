@@ -32,8 +32,6 @@ export default function CompanyProfileStep() {
             ['numberOfEmployees', 'Number of employees', true],
             ['yearEstablished', 'Year established', false],
             ['assessmentDate', 'Assessment date', false],
-            ['ownerAge', 'Owner age', false],
-            ['assessedBy', 'Assessed by', false],
           ].map(([key, label, isNumericComma]) => (
             <div key={key as string} className="flex items-center gap-3">
               <Label className="w-44 shrink-0 font-semibold">{label as string}:</Label>
