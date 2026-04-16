@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      assessments: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          profile: Json
+          selected_profile: string
+          step: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          profile?: Json
+          selected_profile?: string
+          step?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          profile?: Json
+          selected_profile?: string
+          step?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
