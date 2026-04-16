@@ -2,6 +2,12 @@
 
 export type AnswerType = 'yn' | 'number' | 'percentage';
 
+export interface AnswerOption {
+  label: string;
+  value: string;
+  risk: 'low' | 'medium' | 'high';
+}
+
 export interface Question {
   id: string;
   text: string;
@@ -9,6 +15,7 @@ export interface Question {
   scoringGuide: string;
   quickWin: string;
   score: (answer: string) => number;
+  options: AnswerOption[];
 }
 
 export interface Dimension {
