@@ -28,18 +28,27 @@ export default function CompanyProfileStep() {
         </div>
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            ['companyName', 'Company name'],
-            ['numberOfEmployees', 'Number of employees'],
-            ['yearEstablished', 'Year established'],
-            ['assessmentDate', 'Assessment date'],
-            ['ownerAge', 'Owner age'],
-            ['assessedBy', 'Assessed by'],
-          ].map(([key, label]) => (
-            <div key={key} className="flex items-center gap-3">
-              <Label className="w-44 shrink-0 font-semibold">{label}:</Label>
+            ['companyName', 'Company name', false],
+            ['numberOfEmployees', 'Number of employees', true],
+            ['yearEstablished', 'Year established', false],
+            ['assessmentDate', 'Assessment date', false],
+            ['ownerAge', 'Owner age', false],
+            ['assessedBy', 'Assessed by', false],
+          ].map(([key, label, isNumericComma]) => (
+            <div key={key as string} className="flex items-center gap-3">
+              <Label className="w-44 shrink-0 font-semibold">{label as string}:</Label>
               <Input
-                value={(profile as any)[key] || ''}
-                onChange={(e) => setProfile({ [key]: e.target.value })}
+                type="text"
+                inputMode={isNumericComma ? 'numeric' : 'text'}
+                value={isNumericComma && (profile as any)[key as string]
+                  ? Number((profile as any)[key as string]).toLocaleString()
+                  : (profile as any)[key as string] || ''}
+                onChange={(e) => {
+                  const val = isNumericComma
+                    ? e.target.value.replace(/[^0-9]/g, '')
+                    : e.target.value;
+                  setProfile({ [key as string]: val });
+                }}
                 className="bg-muted/30"
               />
             </div>
