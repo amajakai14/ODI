@@ -16,7 +16,7 @@ export default function Auth() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) navigate('/');
+    if (!loading && user) navigate('/assessment');
   }, [user, loading, navigate]);
 
   const handleEmailAuth = async (e: React.FormEvent) => {

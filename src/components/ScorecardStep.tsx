@@ -1,12 +1,16 @@
 import { useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { useODIStore } from '@/lib/odi-store';
+import { useAuth } from '@/contexts/AuthContext';
 import { dimensions, weightProfiles, getRiskLevel, getOverallClassification, getRecommendation } from '@/lib/odi-data';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Download, Lock } from 'lucide-react';
+import { toast } from 'sonner';
 import HexMap from '@/components/HexMap';
 
 export default function ScorecardStep() {
   const { answers, selectedProfile, clients, setStep, profile } = useODIStore();
+  const { user } = useAuth();
   const reportRef = useRef<HTMLDivElement>(null);
   const weights = weightProfiles.find(p => p.name === selectedProfile)?.weights || weightProfiles[0].weights;
 
@@ -43,6 +47,10 @@ export default function ScorecardStep() {
   };
 
   const handleDownload = useCallback(async () => {
+    if (!user) {
+      toast.error('Sign in to download your PDF report');
+      return;
+    }
     if (!reportRef.current) return;
     const html2canvas = (await import('html2canvas')).default;
     const { jsPDF } = await import('jspdf');
@@ -65,19 +73,28 @@ export default function ScorecardStep() {
 
     pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
     pdf.save(`ODI_Scorecard_${profile.companyName || 'Report'}.pdf`);
-  }, [profile.companyName]);
+  }, [profile.companyName, user]);
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">ODI v2 SCORECARD — FINAL REPORT</h1>
-          <p className="text-muted-foreground mt-1">Auto-calculated from Assessment and Revenue at Risk data</p>
+          <h1 className="font-serif text-3xl text-foreground">Your Owner Dependency Scorecard</h1>
+          <p className="text-muted-foreground mt-1 text-sm">Auto-calculated from your assessment and revenue analysis</p>
         </div>
-        <Button onClick={handleDownload} className="gap-2">
-          <Download className="w-4 h-4" />
-          Download PDF
-        </Button>
+        {user ? (
+          <Button onClick={handleDownload} className="gap-2">
+            <Download className="w-4 h-4" />
+            Download PDF
+          </Button>
+        ) : (
+          <Link to="/auth">
+            <Button className="gap-2">
+              <Lock className="w-4 h-4" />
+              Sign in to save & download PDF
+            </Button>
+          </Link>
+        )}
       </div>
 
       <div ref={reportRef} className="space-y-8 bg-white p-6 rounded-lg">

@@ -13,6 +13,18 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        serif: ["'Instrument Serif'", "Georgia", "serif"],
+        sans: ["'Work Sans'", "system-ui", "sans-serif"],
+      },
+      backgroundImage: {
+        "gradient-hero": "var(--gradient-hero)",
+        "gradient-soft": "var(--gradient-soft)",
+      },
+      boxShadow: {
+        elegant: "var(--shadow-elegant)",
+        card: "var(--shadow-card)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
