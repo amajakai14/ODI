@@ -43,30 +43,30 @@ const Landing = () => {
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-hero text-primary-foreground">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_30%_20%,white,transparent_60%)]" />
-        <div className="relative max-w-6xl mx-auto px-6 py-24 md:py-32 grid md:grid-cols-12 gap-10 items-center">
-          <div className="md:col-span-7 space-y-6">
-            <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-primary-foreground/70">
+        <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-12 gap-12 items-center">
+          <div className="md:col-span-7 space-y-7">
+            <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-primary-foreground/80">
               <AlertTriangle className="w-3.5 h-3.5" /> The hidden risk inside most SMEs
             </span>
-            <h1 className="font-serif text-5xl md:text-6xl leading-[1.05]">
-              If you stepped away tomorrow, <em className="italic text-accent-foreground/90">how much of your business would walk out with you?</em>
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-primary-foreground">
+              If you stepped away tomorrow, <em className="italic font-normal text-primary-foreground/85">how much of your business would walk out with you?</em>
             </h1>
-            <p className="text-lg text-primary-foreground/80 max-w-xl">
+            <p className="text-base md:text-lg text-primary-foreground/85 max-w-xl leading-relaxed">
               Most owner-led businesses carry a silent dependency on one person — you.
               The Owner Dependency Index measures that risk in 5 minutes and shows you
               exactly where to fix it first.
             </p>
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link to="/assessment">
-                <Button size="lg" className="bg-background text-primary hover:bg-background/90 gap-2 h-12 px-6">
+                <Button size="lg" className="bg-background text-primary hover:bg-background/90 gap-2 h-12 px-6 font-medium">
                   Take the free assessment <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
-              <span className="text-sm text-primary-foreground/70">
+              <span className="text-sm text-primary-foreground/75">
                 No sign-up required · ~5 minutes
               </span>
             </div>
-            <div className="flex items-center gap-6 pt-4 text-xs text-primary-foreground/60">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 text-xs text-primary-foreground/75">
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> 6 risk dimensions</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> Personalised action plan</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> PDF report</span>
@@ -104,16 +104,16 @@ const Landing = () => {
       </section>
 
       {/* The risk */}
-      <section className="py-24 bg-background">
+      <section className="py-20 md:py-24 bg-background">
         <div className="max-w-6xl mx-auto px-6">
           <div className="max-w-3xl mb-14">
-            <p className="text-sm uppercase tracking-[0.18em] text-accent mb-3">The problem</p>
-            <h2 className="font-serif text-4xl md:text-5xl leading-tight">
-              A business that depends on one person <em className="italic">isn't a business — it's a job with overhead.</em>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">The problem</p>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground">
+              A business that depends on one person <em className="italic font-normal text-foreground/75">isn't a business — it's a job with overhead.</em>
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
                 icon: TrendingDown,
@@ -146,10 +146,10 @@ const Landing = () => {
                 body: 'You can\'t scale a bottleneck. Until you reduce dependency, the business plateaus at the limit of one person.',
               },
             ].map(({ icon: Icon, title, body }) => (
-              <div key={title} className="p-6 rounded-xl border border-border bg-card shadow-card">
-                <Icon className="w-6 h-6 text-accent mb-4" strokeWidth={1.5} />
-                <h3 className="font-serif text-2xl mb-2 leading-tight">{title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+              <div key={title} className="p-7 rounded-xl border border-border bg-card shadow-card">
+                <Icon className="w-6 h-6 text-accent mb-5" strokeWidth={1.75} />
+                <h3 className="font-serif text-xl md:text-[1.375rem] mb-3 text-foreground">{title}</h3>
+                <p className="text-[0.95rem] text-muted-foreground leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
@@ -157,19 +157,19 @@ const Landing = () => {
       </section>
 
       {/* What you get */}
-      <section className="py-24 bg-gradient-soft border-y border-border">
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+      <section className="py-20 md:py-24 bg-gradient-soft border-y border-border">
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 lg:gap-16 items-start">
           <div>
-            <p className="text-sm uppercase tracking-[0.18em] text-accent mb-3">The assessment</p>
-            <h2 className="font-serif text-4xl md:text-5xl leading-tight mb-6">
-              Six dimensions. One honest score. <em className="italic">A clear path forward.</em>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">The assessment</p>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-6 text-foreground">
+              Six dimensions. One honest score. <em className="italic font-normal text-foreground/75">A clear path forward.</em>
             </h2>
-            <p className="text-muted-foreground mb-8">
+            <p className="text-[0.95rem] md:text-base text-muted-foreground leading-relaxed mb-8">
               Built for owners of SMEs doing $1M–$50M in revenue. Each question is mapped to a specific
               dependency risk — and each result comes with quick wins, short-term fixes, and long-term
               moves to make your business more independent.
             </p>
-            <ul className="space-y-3">
+            <ul className="space-y-3.5">
               {[
                 'Operations & Process Independence',
                 'Client & Revenue Concentration',
@@ -178,7 +178,7 @@ const Landing = () => {
                 'Strategic Knowledge & IP',
                 'Succession & Continuity',
               ].map(d => (
-                <li key={d} className="flex items-center gap-3 text-sm">
+                <li key={d} className="flex items-center gap-3 text-[0.95rem] text-foreground">
                   <CheckCircle2 className="w-4 h-4 text-accent shrink-0" />
                   <span>{d}</span>
                 </li>
@@ -196,8 +196,8 @@ const Landing = () => {
               <div key={s.step} className="flex gap-5 p-5 rounded-xl bg-card border border-border shadow-card">
                 <div className="font-serif text-3xl text-accent leading-none w-12 shrink-0">{s.step}</div>
                 <div>
-                  <h4 className="font-semibold text-base mb-1">{s.title}</h4>
-                  <p className="text-sm text-muted-foreground">{s.body}</p>
+                  <h4 className="font-sans font-semibold text-base mb-1.5 text-foreground">{s.title}</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{s.body}</p>
                 </div>
               </div>
             ))}
@@ -206,29 +206,29 @@ const Landing = () => {
       </section>
 
       {/* Quote */}
-      <section className="py-24 bg-background">
+      <section className="py-20 md:py-24 bg-background">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <ShieldCheck className="w-8 h-8 text-accent mx-auto mb-6" strokeWidth={1.5} />
-          <blockquote className="font-serif text-3xl md:text-4xl leading-snug">
+          <blockquote className="font-serif text-2xl md:text-3xl lg:text-4xl text-foreground leading-snug">
             "The goal isn't to work less in your business. It's to build a business that
-            <em className="italic"> doesn't need you to work in it at all.</em>"
+            <em className="italic font-normal text-foreground/75"> doesn't need you to work in it at all.</em>"
           </blockquote>
-          <p className="text-sm text-muted-foreground mt-6 uppercase tracking-wider">— The premise of the ODI</p>
+          <p className="text-xs font-semibold text-muted-foreground mt-6 uppercase tracking-[0.18em]">— The premise of the ODI</p>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-gradient-hero text-primary-foreground">
+      <section className="py-20 md:py-24 bg-gradient-hero text-primary-foreground">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="font-serif text-4xl md:text-5xl mb-5 leading-tight">
+          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl mb-5 text-primary-foreground">
             Find out your Owner Dependency score in 5 minutes.
           </h2>
-          <p className="text-primary-foreground/80 mb-8 max-w-xl mx-auto">
+          <p className="text-base text-primary-foreground/85 mb-8 max-w-xl mx-auto leading-relaxed">
             Free. No sign-up needed to take it. Sign in only if you want to save your results
             and download a PDF report.
           </p>
           <Link to="/assessment">
-            <Button size="lg" className="bg-background text-primary hover:bg-background/90 gap-2 h-12 px-6">
+            <Button size="lg" className="bg-background text-primary hover:bg-background/90 gap-2 h-12 px-6 font-medium">
               Start your assessment <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
