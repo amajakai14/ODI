@@ -16,8 +16,9 @@ interface ODIState {
   reset: () => void;
   assessmentId: string | null;
   loaded: boolean;
-  loadAssessment: (userId: string) => Promise<void>;
+  loadAssessment: (userId: string | null) => Promise<void>;
   saveAssessment: (userId: string) => Promise<void>;
+  saveGuestLocal: () => void;
 }
 
 const defaultProfile: CompanyProfile = {
@@ -31,13 +32,32 @@ const defaultClients = Array.from({ length: 10 }, () => ({
   riskIfOwnerLeaves: '', mitigationStatus: '',
 }));
 
-let saveTimeout: ReturnType<typeof setTimeout> | null = null;
+const GUEST_KEY = 'odi:guest';
 
-function debouncedSave(userId: string, get: () => ODIState) {
-  if (saveTimeout) clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(() => {
-    get().saveAssessment(userId);
-  }, 1500);
+function readGuestLocal() {
+  try {
+    const raw = localStorage.getItem(GUEST_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeGuestLocal(state: Partial<ODIState>) {
+  try {
+    localStorage.setItem(
+      GUEST_KEY,
+      JSON.stringify({
+        step: state.step,
+        profile: state.profile,
+        selectedProfile: state.selectedProfile,
+        answers: state.answers,
+        clients: state.clients,
+      }),
+    );
+  } catch {
+    /* ignore */
+  }
 }
 
 export const useODIStore = create<ODIState>((set, get) => ({
@@ -51,14 +71,38 @@ export const useODIStore = create<ODIState>((set, get) => ({
   setAnswer: (id, value) => set((state) => ({ answers: { ...state.answers, [id]: value } })),
   clients: defaultClients.map(c => ({ ...c })),
   setClients: (c) => set({ clients: c }),
-  reset: () => set({
-    step: 0, profile: { ...defaultProfile }, selectedProfile: 'Balanced (Default)',
-    answers: {}, clients: defaultClients.map(c => ({ ...c })), assessmentId: null,
-  }),
+  reset: () => {
+    try { localStorage.removeItem(GUEST_KEY); } catch { /* ignore */ }
+    set({
+      step: 0, profile: { ...defaultProfile }, selectedProfile: 'Balanced (Default)',
+      answers: {}, clients: defaultClients.map(c => ({ ...c })), assessmentId: null,
+    });
+  },
   assessmentId: null,
   loaded: false,
 
-  loadAssessment: async (userId: string) => {
+  saveGuestLocal: () => writeGuestLocal(get()),
+
+  loadAssessment: async (userId: string | null) => {
+    // Guest: load from localStorage
+    if (!userId) {
+      const local = readGuestLocal();
+      if (local) {
+        set({
+          profile: local.profile ?? { ...defaultProfile },
+          answers: local.answers ?? {},
+          selectedProfile: local.selectedProfile ?? 'Balanced (Default)',
+          step: local.step ?? 0,
+          clients: local.clients ?? defaultClients.map(c => ({ ...c })),
+          loaded: true,
+        });
+      } else {
+        set({ loaded: true });
+      }
+      return;
+    }
+
+    // Logged-in: load from Supabase, falling back to any local guest data
     const { data, error } = await supabase
       .from('assessments')
       .select('*')
@@ -77,7 +121,23 @@ export const useODIStore = create<ODIState>((set, get) => ({
         loaded: true,
       });
     } else {
-      set({ loaded: true });
+      // Migrate guest data into the user's account, if present
+      const local = readGuestLocal();
+      if (local) {
+        set({
+          profile: local.profile ?? { ...defaultProfile },
+          answers: local.answers ?? {},
+          selectedProfile: local.selectedProfile ?? 'Balanced (Default)',
+          step: local.step ?? 0,
+          clients: local.clients ?? defaultClients.map(c => ({ ...c })),
+          loaded: true,
+        });
+        // Persist immediately so it's saved to the account
+        await get().saveAssessment(userId);
+        try { localStorage.removeItem(GUEST_KEY); } catch { /* ignore */ }
+      } else {
+        set({ loaded: true });
+      }
     }
   },
 
@@ -108,4 +168,3 @@ export const useODIStore = create<ODIState>((set, get) => ({
     }
   },
 }));
-
