@@ -77,15 +77,24 @@ export default function ScorecardStep() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">ODI v2 SCORECARD — FINAL REPORT</h1>
-          <p className="text-muted-foreground mt-1">Auto-calculated from Assessment and Revenue at Risk data</p>
+          <h1 className="font-serif text-3xl text-foreground">Your Owner Dependency Scorecard</h1>
+          <p className="text-muted-foreground mt-1 text-sm">Auto-calculated from your assessment and revenue analysis</p>
         </div>
-        <Button onClick={handleDownload} className="gap-2">
-          <Download className="w-4 h-4" />
-          Download PDF
-        </Button>
+        {user ? (
+          <Button onClick={handleDownload} className="gap-2">
+            <Download className="w-4 h-4" />
+            Download PDF
+          </Button>
+        ) : (
+          <Link to="/auth">
+            <Button className="gap-2">
+              <Lock className="w-4 h-4" />
+              Sign in to save & download PDF
+            </Button>
+          </Link>
+        )}
       </div>
 
       <div ref={reportRef} className="space-y-8 bg-white p-6 rounded-lg">
