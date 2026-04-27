@@ -43,30 +43,30 @@ const Landing = () => {
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-hero text-primary-foreground">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_30%_20%,white,transparent_60%)]" />
-        <div className="relative max-w-6xl mx-auto px-6 py-24 md:py-32 grid md:grid-cols-12 gap-10 items-center">
-          <div className="md:col-span-7 space-y-6">
-            <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-primary-foreground/70">
+        <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-12 gap-12 items-center">
+          <div className="md:col-span-7 space-y-7">
+            <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-primary-foreground/80">
               <AlertTriangle className="w-3.5 h-3.5" /> The hidden risk inside most SMEs
             </span>
-            <h1 className="font-serif text-5xl md:text-6xl leading-[1.05]">
-              If you stepped away tomorrow, <em className="italic text-accent-foreground/90">how much of your business would walk out with you?</em>
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-primary-foreground">
+              If you stepped away tomorrow, <em className="italic font-normal text-primary-foreground/85">how much of your business would walk out with you?</em>
             </h1>
-            <p className="text-lg text-primary-foreground/80 max-w-xl">
+            <p className="text-base md:text-lg text-primary-foreground/85 max-w-xl leading-relaxed">
               Most owner-led businesses carry a silent dependency on one person — you.
               The Owner Dependency Index measures that risk in 5 minutes and shows you
               exactly where to fix it first.
             </p>
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link to="/assessment">
-                <Button size="lg" className="bg-background text-primary hover:bg-background/90 gap-2 h-12 px-6">
+                <Button size="lg" className="bg-background text-primary hover:bg-background/90 gap-2 h-12 px-6 font-medium">
                   Take the free assessment <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
-              <span className="text-sm text-primary-foreground/70">
+              <span className="text-sm text-primary-foreground/75">
                 No sign-up required · ~5 minutes
               </span>
             </div>
-            <div className="flex items-center gap-6 pt-4 text-xs text-primary-foreground/60">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 text-xs text-primary-foreground/75">
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> 6 risk dimensions</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> Personalised action plan</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> PDF report</span>
