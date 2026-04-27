@@ -104,16 +104,16 @@ const Landing = () => {
       </section>
 
       {/* The risk */}
-      <section className="py-24 bg-background">
+      <section className="py-20 md:py-24 bg-background">
         <div className="max-w-6xl mx-auto px-6">
           <div className="max-w-3xl mb-14">
-            <p className="text-sm uppercase tracking-[0.18em] text-accent mb-3">The problem</p>
-            <h2 className="font-serif text-4xl md:text-5xl leading-tight">
-              A business that depends on one person <em className="italic">isn't a business — it's a job with overhead.</em>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">The problem</p>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground">
+              A business that depends on one person <em className="italic font-normal text-foreground/75">isn't a business — it's a job with overhead.</em>
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
                 icon: TrendingDown,
@@ -146,10 +146,10 @@ const Landing = () => {
                 body: 'You can\'t scale a bottleneck. Until you reduce dependency, the business plateaus at the limit of one person.',
               },
             ].map(({ icon: Icon, title, body }) => (
-              <div key={title} className="p-6 rounded-xl border border-border bg-card shadow-card">
-                <Icon className="w-6 h-6 text-accent mb-4" strokeWidth={1.5} />
-                <h3 className="font-serif text-2xl mb-2 leading-tight">{title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+              <div key={title} className="p-7 rounded-xl border border-border bg-card shadow-card">
+                <Icon className="w-6 h-6 text-accent mb-5" strokeWidth={1.75} />
+                <h3 className="font-serif text-xl md:text-[1.375rem] mb-3 text-foreground">{title}</h3>
+                <p className="text-[0.95rem] text-muted-foreground leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
