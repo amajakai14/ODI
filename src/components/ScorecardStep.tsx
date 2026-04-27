@@ -1,12 +1,16 @@
 import { useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { useODIStore } from '@/lib/odi-store';
+import { useAuth } from '@/contexts/AuthContext';
 import { dimensions, weightProfiles, getRiskLevel, getOverallClassification, getRecommendation } from '@/lib/odi-data';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Download, Lock } from 'lucide-react';
+import { toast } from 'sonner';
 import HexMap from '@/components/HexMap';
 
 export default function ScorecardStep() {
   const { answers, selectedProfile, clients, setStep, profile } = useODIStore();
+  const { user } = useAuth();
   const reportRef = useRef<HTMLDivElement>(null);
   const weights = weightProfiles.find(p => p.name === selectedProfile)?.weights || weightProfiles[0].weights;
 
@@ -43,6 +47,10 @@ export default function ScorecardStep() {
   };
 
   const handleDownload = useCallback(async () => {
+    if (!user) {
+      toast.error('Sign in to download your PDF report');
+      return;
+    }
     if (!reportRef.current) return;
     const html2canvas = (await import('html2canvas')).default;
     const { jsPDF } = await import('jspdf');
@@ -65,7 +73,7 @@ export default function ScorecardStep() {
 
     pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
     pdf.save(`ODI_Scorecard_${profile.companyName || 'Report'}.pdf`);
-  }, [profile.companyName]);
+  }, [profile.companyName, user]);
 
   return (
     <div className="space-y-8">
