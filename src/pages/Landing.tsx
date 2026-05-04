@@ -1,14 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/contexts/AuthContext';
 import {
   AlertTriangle, TrendingDown, Users, Briefcase, Clock, ShieldCheck,
   ArrowRight, CheckCircle2, BarChart3,
 } from 'lucide-react';
 
 const Landing = () => {
-  const { user, signOut } = useAuth();
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Nav */}
@@ -21,21 +18,9 @@ const Landing = () => {
             <span className="font-serif text-xl">Owner Dependency Index</span>
           </Link>
           <nav className="flex items-center gap-3">
-            {user ? (
-              <>
-                <Link to="/assessment">
-                  <Button variant="ghost" size="sm">My Assessment</Button>
-                </Link>
-                <Button variant="outline" size="sm" onClick={signOut}>Sign out</Button>
-              </>
-            ) : (
-              <>
-                <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground">Sign in</Link>
-                <Link to="/assessment">
-                  <Button size="sm">Start free assessment</Button>
-                </Link>
-              </>
-            )}
+            <Link to="/assessment">
+              <Button size="sm">Start free assessment</Button>
+            </Link>
           </nav>
         </div>
       </header>
@@ -128,22 +113,22 @@ const Landing = () => {
               {
                 icon: Briefcase,
                 title: 'No exit, no break, no Plan B',
-                body: 'Selling, stepping back, or even taking a holiday becomes impossible when the business can\'t run without you.',
+                body: "Selling, stepping back, or even taking a holiday becomes impossible when the business can't run without you.",
               },
               {
                 icon: Clock,
                 title: '60-hour weeks, forever',
-                body: 'Every decision routes back to you. Growth caps out at your personal capacity — and burnout becomes the ceiling.',
+                body: "Every decision routes back to you. Growth caps out at your personal capacity — and burnout becomes the ceiling.",
               },
               {
                 icon: AlertTriangle,
                 title: 'One illness from collapse',
-                body: 'Insurance won\'t replace your judgement. Owner-dependent businesses face existential risk from a single life event.',
+                body: "Insurance won't replace your judgement. Owner-dependent businesses face existential risk from a single life event.",
               },
               {
                 icon: BarChart3,
                 title: 'Growth that stalls at you',
-                body: 'You can\'t scale a bottleneck. Until you reduce dependency, the business plateaus at the limit of one person.',
+                body: "You can't scale a bottleneck. Until you reduce dependency, the business plateaus at the limit of one person.",
               },
             ].map(({ icon: Icon, title, body }) => (
               <div key={title} className="p-7 rounded-xl border border-border bg-card shadow-card">
@@ -191,7 +176,7 @@ const Landing = () => {
               { step: '01', title: 'Answer', body: 'Six dimensions, ~30 questions. Honest answers, no judgement.' },
               { step: '02', title: 'See your score', body: 'A weighted Owner Dependency Index from LOW to CRITICAL.' },
               { step: '03', title: 'Get your action plan', body: 'Quick wins this week, fixes this quarter, structural changes this year.' },
-              { step: '04', title: 'Save & download', body: 'Sign in to keep your report, track progress, and download a PDF.' },
+              { step: '04', title: 'Download your report', body: 'Your results are saved on this device. Download a PDF of your full scorecard.' },
             ].map(s => (
               <div key={s.step} className="flex gap-5 p-5 rounded-xl bg-card border border-border shadow-card">
                 <div className="font-serif text-3xl text-accent leading-none w-12 shrink-0">{s.step}</div>
@@ -224,8 +209,7 @@ const Landing = () => {
             Find out your Owner Dependency score in 5 minutes.
           </h2>
           <p className="text-base text-primary-foreground/85 mb-8 max-w-xl mx-auto leading-relaxed">
-            Free. No sign-up needed to take it. Sign in only if you want to save your results
-            and download a PDF report.
+            Free. No sign-up needed. Results are saved on this device and you can download a full PDF report.
           </p>
           <Link to="/assessment">
             <Button size="lg" className="bg-background text-primary hover:bg-background/90 gap-2 h-12 px-6 font-medium">
@@ -240,7 +224,6 @@ const Landing = () => {
           <span>© {new Date().getFullYear()} Owner Dependency Index</span>
           <div className="flex items-center gap-6">
             <Link to="/assessment" className="hover:text-foreground">Take assessment</Link>
-            {!user && <Link to="/auth" className="hover:text-foreground">Sign in</Link>}
           </div>
         </div>
       </footer>

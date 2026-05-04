@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useODIStore } from '@/lib/odi-store';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
 import CompanyProfileStep from '@/components/CompanyProfileStep';
 import AssessmentStep from '@/components/AssessmentStep';
 import RevenueRiskStep from '@/components/RevenueRiskStep';
@@ -11,17 +9,12 @@ import ScorecardStep from '@/components/ScorecardStep';
 const steps = ['Company Profile', 'Assessment', 'Revenue at Risk', 'Scorecard'];
 
 const Index = () => {
-  const { step, loaded, loadAssessment, saveGuestLocal } = useODIStore();
-  const { user, signOut } = useAuth();
+  const { step, loaded, load, save } = useODIStore();
 
-  // Load saved assessment (Supabase if logged in, localStorage if guest)
   useEffect(() => {
-    if (!loaded) {
-      loadAssessment(user?.id ?? null);
-    }
-  }, [user?.id, loaded, loadAssessment]);
+    if (!loaded) load();
+  }, [loaded, load]);
 
-  // Auto-save on state changes
   useEffect(() => {
     if (!loaded) return;
     let timer: ReturnType<typeof setTimeout> | null = null;
@@ -34,20 +27,14 @@ const Index = () => {
         state.clients !== prevState.clients
       ) {
         if (timer) clearTimeout(timer);
-        timer = setTimeout(() => {
-          if (user?.id) {
-            state.saveAssessment(user.id);
-          } else {
-            saveGuestLocal();
-          }
-        }, 1200);
+        timer = setTimeout(() => save(), 1200);
       }
     });
     return () => {
       if (timer) clearTimeout(timer);
       unsub();
     };
-  }, [user?.id, loaded, saveGuestLocal]);
+  }, [loaded, save]);
 
   if (!loaded) {
     return (
@@ -88,24 +75,8 @@ const Index = () => {
             ))}
           </div>
 
-          <div className="hidden md:flex items-center gap-2 shrink-0">
-            {user ? (
-              <Button variant="ghost" size="sm" onClick={signOut}>Sign out</Button>
-            ) : (
-              <Link to="/auth">
-                <Button variant="outline" size="sm">Sign in to save</Button>
-              </Link>
-            )}
-          </div>
+          <div className="w-24 shrink-0" />
         </div>
-        {!user && (
-          <div className="bg-accent/10 border-t border-accent/20">
-            <div className="max-w-6xl mx-auto px-4 py-2 text-xs text-foreground/80 flex flex-wrap items-center justify-between gap-2">
-              <span>You're taking this as a guest. Your progress is saved on this device only.</span>
-              <Link to="/auth" className="font-medium text-accent hover:underline">Sign in to save & download →</Link>
-            </div>
-          </div>
-        )}
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
