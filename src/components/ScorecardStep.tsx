@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import { useODIStore } from '@/lib/odi-store';
 import { dimensions, weightProfiles, getRiskLevel, getOverallClassification, getRecommendation } from '@/lib/odi-data';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import HexMap from '@/components/HexMap';
 export default function ScorecardStep() {
   const { answers, selectedProfile, clients, setStep, profile } = useODIStore();
   const reportRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
   const weights = weightProfiles.find(p => p.name === selectedProfile)?.weights || weightProfiles[0].weights;
 
   const dimScores = dimensions.map(dim => {
@@ -43,29 +44,34 @@ export default function ScorecardStep() {
   };
 
   const handleDownload = useCallback(async () => {
-    if (!reportRef.current) return;
-    const html2canvas = (await import('html2canvas')).default;
-    const { jsPDF } = await import('jspdf');
+    if (!reportRef.current || isDownloading) return;
+    setIsDownloading(true);
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+      const { jsPDF } = await import('jspdf');
 
-    const canvas = await html2canvas(reportRef.current, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff',
-    });
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+      });
 
-    const imgData = canvas.toDataURL('image/png');
-    const imgW = canvas.width;
-    const imgH = canvas.height;
+      const imgData = canvas.toDataURL('image/png');
+      const imgW = canvas.width;
+      const imgH = canvas.height;
 
-    const pdf = new jsPDF({
-      orientation: imgW > imgH ? 'landscape' : 'portrait',
-      unit: 'px',
-      format: [imgW, imgH],
-    });
+      const pdf = new jsPDF({
+        orientation: imgW > imgH ? 'landscape' : 'portrait',
+        unit: 'px',
+        format: [imgW, imgH],
+      });
 
-    pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
-    pdf.save(`ODI_Scorecard_${profile.companyName || 'Report'}.pdf`);
-  }, [profile.companyName]);
+      pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
+      pdf.save(`ODI_Scorecard_${profile.companyName || 'Report'}.pdf`);
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [profile.companyName, isDownloading]);
 
   return (
     <div className="space-y-8">
@@ -74,9 +80,9 @@ export default function ScorecardStep() {
           <h1 className="font-serif text-3xl text-foreground">Your Owner Dependency Scorecard</h1>
           <p className="text-muted-foreground mt-1 text-sm">Auto-calculated from your assessment and revenue analysis</p>
         </div>
-        <Button onClick={handleDownload} className="gap-2">
+        <Button onClick={handleDownload} className="gap-2" disabled={isDownloading}>
           <Download className="w-4 h-4" />
-          Download PDF
+          {isDownloading ? 'Generating...' : 'Download PDF'}
         </Button>
       </div>
 
